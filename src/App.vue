@@ -1,22 +1,30 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
-  <x-chart />
+  <h3>Chart.js component Example</h3>
+  <button @click="hdlChartData">Change to second data</button> 
+  <select v-model="chartType">
+    <option v-for="option in options" :value="option.value" :key="option.text">
+      {{ option.text }}
+    </option>
+  </select>
+  <x-chart v-if="chartType == 'bar'" chartType="bar" :data="barData" />
+  <x-chart v-else-if="chartType == 'line'" chartType="line" :data="lineData" />
+  <x-chart v-else chartType="bubble" :data="bubbleData" />
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import { defineComponent, ref, computed } from 'vue';
 import XChart from './components/XChart.vue'
+import useXChartExample from './composables/useXChartExample'
 
 export default defineComponent({
   name: 'App',
   components: {
-    HelloWorld,
     XChart
   },
   setup() {
-
+    const{lineData,barData, bubbleData, hdlChartData, chartType, options} = useXChartExample()
+  
+    return {lineData,barData, bubbleData, hdlChartData, chartType, options}
   },
   
 });

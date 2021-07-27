@@ -1,80 +1,106 @@
 <template>
-  <button @click="hdlData">Change second data</button> 
-  <canvas ref="xchart" width="400" height="400"></canvas>
+  <canvas ref="xchart" ></canvas>
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted } from 'vue'
+import { ref, defineComponent, onMounted, PropType, watch, computed } from 'vue'
 
 export interface BarData {
-  labels: string[],
-  datasets: [
-    {
-    label: string,
-    data: number[],
-    backgroundColor: string[],
-    borderColor: string[],
-    borderWidth: number
-    }
-  ]
+  label: string,
+  data: number[],
+  backgroundColor: string[],
+  borderColor: string[],
+  borderWidth: number
 }
+
+export interface LineData {
+  label: string,
+  data: number[],
+  fill: boolean,
+  borderColor: string,
+  tension: number
+}
+export interface BubbleData {
+  data: { x: number, y: number, r: number}[],
+  backgroundColor: string[] | string
+}
+
 export interface ChartData{
- type: string,
- data: BarData,
- options: {
-    scales: {
+  labels?: string[],
+  datasets: BubbleData[] | LineData[] | BarData[] 
+}
+
+export type ChartType = 'bar' | 'line' | 'bubble'
+
+export interface ChartOptions {
+    scales?: {
       y: {
         beginAtZero: boolean
       }
     }
- }
+    plugins:{
+      legend:{
+        display: boolean
+      }
+    }
+}
+
+export interface Chart{
+ type: ChartType,
+ data: ChartData,
+ options: any
 }
 
 export default defineComponent({
- setup(){
+ props: propsXChart(),
+ setup(props, context){
     let Chart = (window as { [key: string]: any })['Chart']
     let myChart: any;
-
-    const barData = ref<ChartData>({
-        type: 'bar',
-        data: {
-          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-          datasets: [
-            {
-              label: '# of Votes',
-              data: [12, 19, 3, 5, 2, 3],
-              backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
-              borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          scales: {
+    let config = {
+        scales: {
             y: {
               beginAtZero: true,
             },
           },
-        },
-      })
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+    }
+    
+    const chartData = ref<Chart>({
+      type: props.chartType,
+      data: props.data,
+      options: computed(() =>{return props.chartType == 'bar' ? config : {plugins: {legend: {display: false}}} })
+    })
+
     //ref
     const xchart = ref<HTMLCanvasElement>()
-  
-    const hdlData = () => {
-      barData.value.data.datasets[0].data[1] = 10
+    
+    watch(()=> props.data , ()=>{
+      chartData.value.data = props.data 
       myChart.update()
-    }
+    })
 
     onMounted(() => {
-      myChart= new Chart(xchart.value!, barData.value)
+      myChart= new Chart(xchart.value!, chartData.value)
     });
 
-    return { hdlData, xchart, barData}
+    return { xchart, chartData}
 
   }
 })
+export function propsXChart() {
+  return {
+    chartType: { type: String as PropType<ChartType>, default: 'bar'},
+    data: { type: Object as PropType<ChartData>, default: () => {} },
+  };
+}
 </script>
 
-<style>
-
+<style scoped>
+canvas{
+  width: 100%
+}
 </style>
