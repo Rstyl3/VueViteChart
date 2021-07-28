@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 export default function () { 
     const barData = ref({
@@ -42,6 +42,56 @@ export default function () {
     })
     const chartType = ref('bar')
 
+    let barOption = {
+                      scales: {
+                        yAxes: {beginAtZero: true}                    
+                      },
+                      plugins: {
+                        legend: {
+                          display: false
+                        }
+                      },
+                    }
+    let thumbnailOption = {
+      scales: {
+        // xAxes: {ticks: {display: false}},
+        // yAxes: {beginAtZero: true,ticks: {display: false}}
+        x: {display: false},
+        y: {beginAtZero: true,display: false},
+        // // grid:{display: true},
+        // // pointLabels: {display: false}    
+      },
+      elements: {
+        point:{
+            radius: 0
+        }
+    },
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      responsive: false,
+      // maintainAspectRatio: false,
+      aspectRatio: 2,
+      events: [] // remove hover events
+    }
+    let thumbnailBubbleOpt = {
+      scales: {
+        x: {display: false},
+        y: {beginAtZero: true,display: false}, 
+      },
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      responsive: false,
+      aspectRatio: 2,
+      events: [] // remove hover events
+    }
+    const chartOptions = computed(() => { return chartType.value == "bar" ? barOption : { scales: {y:{beginAtZero: false}},plugins: {legend: {display: false}} } })
+
     const options = ref([
         { text: 'bar', value: 'bar' },
         { text: 'line', value: 'line' },
@@ -64,9 +114,9 @@ export default function () {
       }
 
       let otherLineData = {
-        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ],
+        labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021' ],
         datasets: [{
-          label: 'My First Dataset',
+          label: 'Second Data set',
           data: [0, 50, 20, 91, 20, 60, 20],
           fill: false,
           borderColor: 'blue',
@@ -108,5 +158,5 @@ export default function () {
       } 
     }
 
-    return {lineData,barData, bubbleData, hdlChartData, chartType, options}
+    return {lineData,barData, bubbleData, hdlChartData, chartType, options , chartOptions, thumbnailOption , thumbnailBubbleOpt}
 }

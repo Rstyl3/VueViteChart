@@ -1,9 +1,11 @@
 <template>
-  <canvas ref="xchart" ></canvas>
+  <div>
+     <canvas ref="xchart" ></canvas>
+  </div>
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted, PropType, watch, computed } from 'vue'
+import { ref, defineComponent, onMounted, PropType, watch, computed, onUnmounted } from 'vue'
 
 export interface BarData {
   label: string,
@@ -56,30 +58,23 @@ export default defineComponent({
  setup(props, context){
     let Chart = (window as { [key: string]: any })['Chart']
     let myChart: any;
-    let config = {
-        scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-          plugins: {
-            legend: {
-              display: false
-            }
-          }
-    }
-    
+  
     const chartData = ref<Chart>({
       type: props.chartType,
       data: props.data,
-      options: computed(() =>{return props.chartType == 'bar' ? config : {plugins: {legend: {display: false}}} })
+      options: props.chartOptions
     })
 
     //ref
     const xchart = ref<HTMLCanvasElement>()
-    
-    watch(()=> props.data , ()=>{
-      chartData.value.data = props.data 
+     
+    onUnmounted(() => {
+      myChart.options = props.chartOptions
+      myChart.update()
+    })
+
+    watch(() => props.data , ()=>{
+      chartData.value.data = props.data
       myChart.update()
     })
 
@@ -95,6 +90,7 @@ export function propsXChart() {
   return {
     chartType: { type: String as PropType<ChartType>, default: 'bar'},
     data: { type: Object as PropType<ChartData>, default: () => {} },
+    chartOptions: {type: Object  , default: () => {} } 
   };
 }
 </script>

@@ -6,9 +6,16 @@
       {{ option.text }}
     </option>
   </select>
-  <x-chart v-if="chartType == 'bar'" chartType="bar" :data="barData" />
-  <x-chart v-else-if="chartType == 'line'" chartType="line" :data="lineData" />
-  <x-chart v-else chartType="bubble" :data="bubbleData" />
+  <x-chart v-if="chartType == 'bar'" chartType="bar" :data="barData" :chartOptions="chartOptions" />
+  <x-chart v-else-if="chartType == 'line'" chartType="line" :data="lineData" :chartOptions="chartOptions" />
+  <x-chart v-else chartType="bubble" :data="bubbleData" :chartOptions="chartOptions"/>
+  
+  <h3>Thumbnails</h3>
+  <div style="display: flex; justify-content: space-between;">
+    <x-chart style='width: 300px; position: relative;' chartType="bar" :data="barData" :chartOptions="thumbnailOption" />
+    <x-chart style='width: 300px; position: relative;' chartType="line" :data="lineData" :chartOptions="thumbnailOption" />
+    <x-chart style='width: 300px; position: relative;' chartType="bubble" :data="bubbleData" :chartOptions="thumbnailBubbleOpt"/>
+  </div>  
 </template>
 
 <script lang="ts">
@@ -22,9 +29,9 @@ export default defineComponent({
     XChart
   },
   setup() {
-    const{lineData,barData, bubbleData, hdlChartData, chartType, options} = useXChartExample()
-  
-    return {lineData,barData, bubbleData, hdlChartData, chartType, options}
+    const{lineData,barData, bubbleData, hdlChartData, chartType, options, chartOptions, thumbnailOption, thumbnailBubbleOpt} = useXChartExample()
+
+    return {lineData,barData, bubbleData, hdlChartData, chartType, options , chartOptions, thumbnailOption, thumbnailBubbleOpt}
   },
   
 });
