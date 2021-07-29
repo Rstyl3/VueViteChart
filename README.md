@@ -23,3 +23,8 @@ Commit changes and run command:
 ``` node
 git subtree push --prefix dist origin gh-pages
 ```
+
+Run git file instead using git bash:
+```
+./deploy.sh
+```
