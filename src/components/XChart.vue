@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted, PropType, watch, computed, onUnmounted } from 'vue'
+import { ref, defineComponent, onMounted, PropType, watch, onUnmounted } from 'vue'
 
 export interface BarData {
   label: string,

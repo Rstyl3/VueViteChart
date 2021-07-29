@@ -37,12 +37,12 @@ export default function () {
           y: 10,
           r: 10
         }],
-        backgroundColor: 'rgb(255, 99, 132)'
+        backgroundColor: 'rgb(255, 99, 132)',       
       }]
     })
     const chartType = ref('bar')
 
-    let barOption = {
+    const barOption = {
                       scales: {
                         yAxes: {beginAtZero: true}                    
                       },
@@ -52,7 +52,7 @@ export default function () {
                         }
                       },
                     }
-    let thumbnailOption = {
+    const thumbnailOption = {
       scales: {
         // xAxes: {ticks: {display: false}},
         // yAxes: {beginAtZero: true,ticks: {display: false}}
@@ -76,9 +76,18 @@ export default function () {
       aspectRatio: 2,
       events: [] // remove hover events
     }
-    let thumbnailBubbleOpt = {
+    const thumbnailBubbleOpt = {
       scales: {
-        x: {display: false},
+        // xAxis: [
+        //   { 
+        //     display: false,
+        //     ticks: {               
+        //           min: -20,
+        //           max: 100
+        //     },
+        //     grid: { display: false}
+        //   }],
+        x: {display: false,},
         y: {beginAtZero: true,display: false}, 
       },
       plugins: {
@@ -130,20 +139,29 @@ export default function () {
           data: [{
             x: 26,
             y: 20,
-            r: 30
+            //r: 30
+            size: 2
           }, 
           {
             x: 30,
             y: 31,
-            r: 40
+            // r: 40
+            size: 3
           },
           {
             x: 36,
             y: 10,
-            r: 15
+            // r: 15
+            size: 1
           }
           ],
-          backgroundColor: ['red', 'blue', 'green']
+          backgroundColor: ['red', 'blue', 'green'],
+          radius(context:any) {
+            var scale = context.chart.scales.y;
+            var zero = scale.getPixelForValue(0);
+            var value = scale.getPixelForValue(context.dataset.data[context.dataIndex].size);
+            return Math.abs(value - zero);
+          },          
         }]
       }
 
